@@ -3,12 +3,11 @@ on:
   pull_request:
     types: [opened, labeled, unlabeled, synchronize, edited]
 jobs:
-  Check Label:
+  check_label:
     # if: github.base_ref == 'master'
     runs-on: ubuntu-latest
     steps:
       - uses: danielchabr/pr-labels-checker@v3
-        id: checkLabel
         with:
           hasSome: cicd,documentation
           githubToken: ${{ secrets.GITHUB_TOKEN }}
