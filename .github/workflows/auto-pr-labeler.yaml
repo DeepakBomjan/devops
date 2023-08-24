@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Find Current Pull Request
-        run: echo Hello
         uses: jwalton/gh-find-current-pr@v1.3.2
         id: findPr
         with:
