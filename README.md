@@ -21,6 +21,12 @@ We will include all devops scripts, templates here.
 *Fixed* for any bug fixes.
 *Security* in case of vulnerabilities.
 
+### Automatic Version Bump
+The following three actions can be used to implement automatic version bump:
+- mathieudutour/github-tag-action
+- anothrNick/github-tag-action
+- haya14busa/action-bumpr
+
 ## CICD Secrets
 
 ## CICD Actions
