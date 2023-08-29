@@ -1,14 +1,16 @@
 name: Bump version
 on:
-  pull_request:
-    types:
-      - closed
+  # pull_request:
+  #   types:
+  #     - closed
+  push:
     branches:
       - main
+      - test-ci
 
 jobs:
   build:
-    if: github.event.pull_request.merged == true
+    # if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -24,5 +26,5 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # if you don't want to set write permissions use a PAT token
         WITH_V: true
         PRERELEASE: true
-        DEFAULT_BUMP: beta
-        # PRERELEASE_SUFFIX: beta
+        # DEFAULT_BUMP: alpha
+        PRERELEASE_SUFFIX: alpha.2

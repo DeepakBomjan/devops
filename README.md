@@ -21,3 +21,11 @@ We will include all devops scripts, templates here.
 *Fixed* for any bug fixes.
 *Security* in case of vulnerabilities.
 
+## CICD Secrets
+
+## CICD Actions
+
+## Git
+
+## Docker
+
