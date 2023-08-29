@@ -27,4 +27,4 @@ jobs:
         WITH_V: true
         PRERELEASE: true
         # DEFAULT_BUMP: alpha
-        PRERELEASE_SUFFIX: alpha
+        PRERELEASE_SUFFIX: alpha.2
