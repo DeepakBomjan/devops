@@ -24,5 +24,5 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # if you don't want to set write permissions use a PAT token
         WITH_V: true
         PRERELEASE: true
-        DEFAULT_BUMP: alpha
-        PRERELEASE_SUFFIX: alpha
+        DEFAULT_BUMP: none
+        # PRERELEASE_SUFFIX: beta
