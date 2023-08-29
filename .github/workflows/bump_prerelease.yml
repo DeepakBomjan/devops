@@ -18,6 +18,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           default_bump: false
           pre_release_branches: main,test-ci
+          default_prerelease_bump: false
           append_to_pre_release_tag: alpha
           tag_prefix: v
 

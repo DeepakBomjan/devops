@@ -37,3 +37,5 @@ We will include all devops scripts, templates here.
 
 ## Settings
 
+Hello everyone!
+
