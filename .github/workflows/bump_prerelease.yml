@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - test-ci
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,15 +16,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           default_bump: false
-          pre_release_branches: main,test-ci
-          # default_prerelease_bump: true
+          pre_release_branches: prerelease
+          default_prerelease_bump: true
           append_to_pre_release_tag: alpha
           tag_prefix: v
-
-
-      # - name: Create a GitHub release
-      #   uses: ncipollo/release-action@v1
-      #   with:
-      #     tag: ${{ steps.tag_version.outputs.new_tag }}
-      #     name: Release ${{ steps.tag_version.outputs.new_tag }}
-      #     body: ${{ steps.tag_version.outputs.changelog }}
