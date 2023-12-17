@@ -1,3 +1,15 @@
+# Linux Networking and Firewall Commands
+
+## SSH Tunneling
+```bash
+## Forward local port 8080 to remote 3000
+ssh admin@server1.example.com -L 8080:server1.example.com:3000
+## Donot execute remote command, you will not get bash shell
+ssh -N admin@server1.example.com -L 8080:server1.example.com:3000
+## Run in background
+ssh -f -N admin@server1.example.com -L 8080:server1.example.com:3000
+```
+
 ## Allowing ssh over eth0
 ```bash
 iptables -A INPUT -i eth0 -p tcp --dport 22 -j ACCEPT
