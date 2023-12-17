@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - main
+      - prerelease
+      - release.*
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,6 +19,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           default_bump: false
           pre_release_branches: prerelease
-          default_prerelease_bump: true
+          release_branches: release.*
           append_to_pre_release_tag: alpha
           tag_prefix: v
