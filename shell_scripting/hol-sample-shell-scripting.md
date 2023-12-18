@@ -118,3 +118,26 @@ _EOF_
 done
 echo "Program terminated."
 ```
+
+3. **All combination of user input switch case**
+```bash
+#!/bin/bash
+
+echo "Do you like fruits? (yes/no)"
+read response
+
+case $response in
+  [Yy]|[Yy][Ee][Ss])
+    echo "Great! Here are some fruits for you."
+    # Add more code for positive response if needed
+    ;;
+  [Nn]|[Nn][Oo])
+    echo "Oh no! Why not give fruits a try?"
+    # Add more code for negative response if needed
+    ;;
+  *)
+    echo "Invalid response. Please enter yes or no."
+    ;;
+esac
+
+```
