@@ -59,3 +59,6 @@ dialog --msgbox "Hostname has been set to: $hostname" 0 0
 # Notify user to restart for changes to take effect
 dialog --msgbox "Please restart your system for the changes to take effect." 0 0
 ```
+
+## Dialog example scripts
+https://github.com/tolik-punkoff/dialog-examples
