@@ -12,26 +12,29 @@ docker build -t myapp:latest .
 docker run -d -p 8000:80 <imagename> 
 ```
 
+### Docker save images to file
+```bash
+docker save -o c:/myfile.tar centos:16
+```
+
+### Docker load image
+```bash
+docker load -i <path to image tar file>
+```
+
+### Docker login
+```bash
+docker login --username
+```
+
 ### Sample App
 ```bash
-git clone https://github.com/wingkwong/react-quiz-form.git
 git clone https://github.com/md-kawsar-ali/React-Quiz-App
 ```
 
-### Nginx conf file
-```bash
-server {
-    listen 80;
-    location / {
-        root /usr/share/nginx/html;
-        index index.html index.htm;
-        try_files $uri $uri/ /index.html =404;
-        proxy_pass http://localhost:3000;
-    }
-}
-```
 
-### Dockerfile
+
+###  Dockerfile file - multistage
 ```bash
 # build environment
 FROM node:alpine as build
@@ -49,7 +52,7 @@ CMD ["nginx", "-g", "daemon off;"]
 ```
 
 
-### Optimized Dockerfile
+### Optimized Dockerfile - multistage
 ```bash
 FROM node:18 as build
 WORKDIR /app
@@ -101,7 +104,7 @@ server {
 }
 ```
 
-### Dockerfile
+### Simple Dockerfile
 
 ```bash
 FROM nginx:alpine
