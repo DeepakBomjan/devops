@@ -19,3 +19,9 @@ sudo systemctl start docker
 ```bash
 sudo usermod -aG docker ec2-user
 ```
+
+## Install node
+```bash
+sudo yum install npm
+```
+
