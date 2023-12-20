@@ -86,3 +86,44 @@ kubectl describe deployments
 ```bash
 kubectl scale deployment nginx-deployment --replicas=5
 ```
+## When to use a ReplicaSet
+```bash
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: frontend
+  labels:
+    app: guestbook
+    tier: frontend
+spec:
+  # modify replicas according to your case
+  replicas: 3
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      containers:
+      - name: php-redis
+        image: gcr.io/google_samples/gb-frontend:v3
+
+```
+
+## To apply
+```bash
+kubectl apply -f https://kubernetes.io/examples/controllers/frontend.yaml
+kubectl get rs
+```
+
+## Get yaml of one of the pod
+```bash
+kubectl get pods frontend-b2zdv -o yaml
+```
+
+## Rolling update
+```bash
+kubectl set image deployments/kubernetes-bootcamp kubernetes-bootcamp=jocatalin/kubernetes-bootcamp:v2
+```

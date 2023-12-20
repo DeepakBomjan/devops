@@ -1,5 +1,5 @@
 
-## Installing kubeadm, kubelet and kubectl 
+## Install Kubernetes
 https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
 
 
@@ -81,9 +81,13 @@ To see the stack trace of this error execute with --v=5 or higher
 sudo systemctl restart containerd
 sudo systemctl enable containerd
 
-## Run only on master node
-kubeadm init  # !!! WARNING <---
+
 ```
+### Run only on master node !!!
+```bash
+sudo kubeadm init
+```
+
 
 
 ```bash
