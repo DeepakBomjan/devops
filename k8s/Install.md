@@ -79,8 +79,10 @@ To see the stack trace of this error execute with --v=5 or higher
 
 ```bash
 sudo systemctl restart containerd
+sudo systemctl enable containerd
+
 ## Run only on master node
-kubeadm init
+kubeadm init  # !!! WARNING <---
 ```
 
 
@@ -98,8 +100,16 @@ kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.0/
 
 ## Install ingress controller
 
-<!-- https://kubernetes.github.io/ingress-nginx/deploy/
+https://kubernetes.github.io/ingress-nginx/deploy/
 
 kubectl create secret generic jwt-secret --from-literal=JWT_KEY=thisissupersecretjwtkey -n development
 kubectl create secret generic cookie-secret --from-literal=COOKIE_SIGNING_KEY=thisissupersecretcookiesigningkey -n development
-kubectl create secret generic stripe-secret --from-literal=STRIPE_KEY=sk_test_51HjfSGCqMWa1qdglqmD9HYWyp1cvvUC4FoYEXW0mAkV8t8P0Kx26VY4psazschjhZF8juqAvuuaU19Iwwbx4ZKce00hcIwBHNU -n development -->
+kubectl create secret generic stripe-secret --from-literal=STRIPE_KEY=sk_test_51HjfSGCqMWa1qdglqmD9HYWyp1cvvUC4FoYEXW0mAkV8t8P0Kx26VY4psazschjhZF8juqAvuuaU19Iwwbx4ZKce00hcIwBHNU -n development
+
+
+
+### Install Helm
+```bash
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+./get_helm.sh
+```
