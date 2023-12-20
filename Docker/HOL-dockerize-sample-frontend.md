@@ -1,5 +1,17 @@
 ## Dockerize React applications with Nginx
 
+
+## Docker commands
+
+### Docker build
+```bash
+docker build -t myapp:latest .
+```
+### Docker run command
+```bash
+docker run -d -p 8000:80 <imagename> 
+```
+
 ### Sample App
 ```bash
 git clone https://github.com/wingkwong/react-quiz-form.git
