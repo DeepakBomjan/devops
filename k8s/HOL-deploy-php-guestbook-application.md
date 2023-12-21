@@ -1,6 +1,6 @@
 ## Example: Deploying PHP Guestbook application with Redis
 
-[Installing the AWS Load Balancer Controller add-on](https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html)
+
 ```yaml
 # SOURCE: https://cloud.google.com/kubernetes-engine/docs/tutorials/guestbook
 apiVersion: apps/v1

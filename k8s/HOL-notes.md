@@ -150,3 +150,19 @@ kubectl delete clusterrolebinding cluster-admin-rolebinding
 
 ```
 
+
+## Edit and patch manifest
+```bash
+kubectl patch svc <svc-name> -n <namespace> -p '{"spec": {"type": "LoadBalancer", "externalIPs":["172.31.71.218"]}}'
+```
+
+## Load Balancer
+```bash
+kubectl describe deployment aws-load-balancer-controller -n kube-system
+kubectl -n kube-system rollout status deployment aws-load-balancer-controller
+kubectl describe deployment aws-load-balancer-controller -n kube-system
+
+
+kubectl get deployment.apps/aws-load-balancer-controller service/aws-load-balancer-webhook-service --namespace=kube-system
+
+```
