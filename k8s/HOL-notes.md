@@ -86,3 +86,83 @@ kubectl describe deployments
 ```bash
 kubectl scale deployment nginx-deployment --replicas=5
 ```
+## When to use a ReplicaSet
+```bash
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: frontend
+  labels:
+    app: guestbook
+    tier: frontend
+spec:
+  # modify replicas according to your case
+  replicas: 3
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      containers:
+      - name: php-redis
+        image: gcr.io/google_samples/gb-frontend:v3
+
+```
+
+## To apply
+```bash
+kubectl apply -f https://kubernetes.io/examples/controllers/frontend.yaml
+kubectl get rs
+```
+
+## Get yaml of one of the pod
+```bash
+kubectl get pods frontend-b2zdv -o yaml
+```
+
+## Rolling update
+```bash
+kubectl set image deployments/kubernetes-bootcamp kubernetes-bootcamp=jocatalin/kubernetes-bootcamp:v2
+```
+
+## Create namespace and make it default
+
+```bash
+kubectl config set-context --current --namespace=
+```
+
+## Check the configuration
+```bash
+kubectl config view
+```
+
+## Remove account
+```bash
+kubectl delete serviceaccount dashboard-admin -n kubernetes-dashboard
+
+```
+## Remove role binding
+```bash
+kubectl delete clusterrolebinding cluster-admin-rolebinding
+
+```
+
+
+## Edit and patch manifest
+```bash
+kubectl patch svc <svc-name> -n <namespace> -p '{"spec": {"type": "LoadBalancer", "externalIPs":["172.31.71.218"]}}'
+```
+
+## Load Balancer
+```bash
+kubectl describe deployment aws-load-balancer-controller -n kube-system
+kubectl -n kube-system rollout status deployment aws-load-balancer-controller
+kubectl describe deployment aws-load-balancer-controller -n kube-system
+
+
+kubectl get deployment.apps/aws-load-balancer-controller service/aws-load-balancer-webhook-service --namespace=kube-system
+
+```

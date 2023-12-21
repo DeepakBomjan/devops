@@ -1,0 +1,35 @@
+global:
+  scrape_interval:     15s
+  external_labels:
+    monitor: 'nodechain-monitor'
+remote_write:
+  - url: "http://172.31.86.77:8086/api/v1/prom/write?db=nodedb&u=admin&p=S1mpl3v13w"
+
+remote_read:
+  - url: "http://172.31.86.77:8086/api/v1/prom/read?db=nodedb&u=admin&p=S1mpl3v13w"
+
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['localhost:9090']
+  - job_name: 'syslog_line_count'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['172.31.86.77:8000']
+  - job_name: 'ibc-relayer-mainnet'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['172.31.65.69:8000']
+  - job_name: 'ibc-relayer-mainnet-core'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['172.31.65.69:5183']
+  - job_name: 'ibc-relayer-testnet'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['172.31.29.20:8000']
+  - job_name: 'ibc-relayer-testnet2'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['172.31.77.124:8000']
