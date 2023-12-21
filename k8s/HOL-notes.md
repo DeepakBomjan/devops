@@ -127,3 +127,26 @@ kubectl get pods frontend-b2zdv -o yaml
 ```bash
 kubectl set image deployments/kubernetes-bootcamp kubernetes-bootcamp=jocatalin/kubernetes-bootcamp:v2
 ```
+
+## Create namespace and make it default
+
+```bash
+kubectl config set-context --current --namespace=
+```
+
+## Check the configuration
+```bash
+kubectl config view
+```
+
+## Remove account
+```bash
+kubectl delete serviceaccount dashboard-admin -n kubernetes-dashboard
+
+```
+## Remove role binding
+```bash
+kubectl delete clusterrolebinding cluster-admin-rolebinding
+
+```
+
