@@ -45,7 +45,7 @@ EOF
   depends_on = [aws_main_route_table_association.set-master-default-rt-assoc]
 }
 
-# resource "null_resource" "delete_venafi_cert" {
+# resource "null_resource" "jenkins" {
 #   provisioner "remote-exec" {
 #     when = destroy
 #     inline = [
