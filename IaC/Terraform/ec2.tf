@@ -9,7 +9,7 @@ variable "vpc_id" {
 
 variable "subnets" {
   type    = list(string)
-  default = ["subnet-058ffc6d3d246af2e", "subnet-0555e25f817f2cad0"]
+  default = ["subnet-07fc51e0b4ef96955", "subnet-0dbb164188d88f525"]
 }
 
 variable "root_ssh_pub_key" {
@@ -77,7 +77,7 @@ data "aws_ami" "rhel" {
 
 resource "aws_instance" "hol-machine" {
   count                  = var.instance_count
-  ami                    = data.aws_ami.rhel.id
+  ami                    = data.aws_ami.ubuntu.id
   instance_type          = "t2.micro"
   key_name               = "hol_user_key"
   subnet_id              = element(var.subnets, count.index % length(var.subnets))
