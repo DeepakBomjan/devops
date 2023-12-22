@@ -1,6 +1,7 @@
 ---
 # aws ec2 ansible dynamic inventory plugin
 plugin: aws_ec2
+boto_profile: cloud_guru
 
 regions: 
   - us-east-1
