@@ -9,6 +9,9 @@ FROM python:latest
     ```
 2. Dockerfile
     ```bash
+    FROM ubuntu:latest
+    RUN sudo apt-get update && \
+        sudo apt-get install -y python3-pip
     WORKDIR /app
 
     COPY requirements.txt .
