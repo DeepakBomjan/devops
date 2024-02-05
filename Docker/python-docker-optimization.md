@@ -87,3 +87,8 @@ FROM python:latest
     ```bash
     docker build . -t blog
     ```
+
+## References
+1. [Python: Docker Image Optimization](https://dev.to/mattdark/python-docker-image-optimization-50p0)
+2. [Setting up python vertualenv](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/)
+3. [Optimizing Docker Images With Python](https://www.divio.com/blog/optimizing-docker-images-python/)
