@@ -17,3 +17,9 @@ sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plug
 
 sudo usermod -aG docker ubuntu
 
+ # Enable password authentication
+sed -i 's/no/yes/g' /etc/ssh/sshd_config
+systemctl restart sshd
+
+echo -e "changeme\nchangeme" | sudo passwd ubuntu
+
