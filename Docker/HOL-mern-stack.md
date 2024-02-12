@@ -15,6 +15,22 @@ sudo apt-get update
 sudo apt-get install -y mongodb-mongosh
 sudo apt-get install -y mongodb-mongosh-shared-openssl3
 ```
+### Starting seed db
+```bash
+npm run seed:db  [email-devopsxcend@gmail.com] [password-changeme]
+
+```
+
+## Errors
+```bash
+Error: Cannot find module 'bcryptjs'
+```
+```bash
+npm install node-gyp -g
+npm install bcrypt -g
+
+npm install bcrypt --save
+```
 
 
 ## References
