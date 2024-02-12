@@ -14,11 +14,11 @@ echo \
 sudo apt-get update
 
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
+sudo apt-get install -y npm
 sudo usermod -aG docker ubuntu
 
  # Enable password authentication
-sed -i 's/no/yes/g' /etc/ssh/sshd_config
+sed -i 's/^PasswordAuthentication\s*no/PasswordAuthentication yes/' sshd_config
 systemctl restart sshd
 
 echo -e "changeme\nchangeme" | sudo passwd ubuntu
