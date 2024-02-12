@@ -217,6 +217,80 @@ docker run --name mongo_container --network mongo_network -d -p 27017:27017 mong
 
 ```
 
+## Example 4
+
+### Postgress DB Initialization scripts
+init.sql
+```sql
+create table sometable(id int);
+```
+```bash
+docker run -v ./init.sql:/docker-entrypoint-initdb.d/init.sql p 5432:5432 postgres
+```
+
+_**More**_..
+
+```sql
+CREATE USER docker;
+CREATE DATABASE docker;
+GRANT ALL PRIVILEGES ON DATABASE docker TO docker;
+```
+Dockerfile
+```bash
+FROM library/postgres
+COPY init.sql /docker-entrypoint-initdb.d/
+```
+
+Run
+```bash
+docker run -e POSTGRES_USER=docker -e POSTGRES_PASSWORD=docker -e POSTGRES_DB=docker library/postgres
+```
+or with Dockerfile
+```bash
+FROM library/postgres
+ENV POSTGRES_USER docker
+ENV POSTGRES_PASSWORD docker
+ENV POSTGRES_DB docker
+```
+
+
+
+
+## Challange HOL
+Dockerize following php application
+[docker-php-sample Public](https://github.com/docker/docker-php-sample/tree/main)
+
+## Example 5
+
+my-database.sql
+```sql
+CREATE TABLE student (
+    id int,
+    name VARCHAR(255)
+);
+
+INSERT INTO student(id, name) VALUES
+(1,'A'),
+(2,'B'),
+(3,'C');
+```
+
+**Mysql**
+```bash
+FROM mysql:latest
+
+ENV MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+ENV MYSQL_DATABASE=${MYSQL_DATABASE}
+ENV MYSQL_USER=${MYSQL_USER}
+ENV MYSQL_PASSWORD=${MYSQL_PASSWORD}
+
+COPY my-database.sql /docker-entrypoint-initdb.d/
+```
+Build
+
+```bash
+docker build --build-arg MYSQL_ROOT_PASSWORD=password --build-arg MYSQL_DATABASE=my_database --build-arg MYSQL_USER=my_user --build-arg MYSQL_PASSWORD=my_password -t my-database-env .
+```
 
 
 
@@ -225,4 +299,10 @@ docker run --name mongo_container --network mongo_network -d -p 27017:27017 mong
 2. [docker commit make image](https://devopsdevelopment.medium.com/building-and-exporting-a-docker-image-to-deploy-a-static-website-with-apache-web-server-be23a43831c9)
 3. [docker samples](https://github.com/dockersamples)
 4. [Setting up and Running a MySQL Container](https://www.baeldung.com/ops/docker-mysql-container)
+4. [PostgreSQL database samples with Docker](https://github.com/zseta/postgres-docker-samples/tree/main)
+5. [docker postgresql](https://github.com/sameersbn/docker-postgresql)
+6. [Apache Docker Container](https://github.com/d11wtq/apache-docker/tree/master)
+7. [Mysql dockerfile](https://github.com/docker-library/mysql/blob/master/Dockerfile.debian)
+
+
 
