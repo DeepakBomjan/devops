@@ -300,13 +300,7 @@ apache-php-mysql/
 Run the mysql docker
 
 ```bash
-docker run -d \
-    -e MYSQL_DATABASE=todo_app \
-    -e MYSQL_USER=todo_admin \
-    -e MYSQL_PASSWORD=password \
-    -e MYSQL_ALLOW_EMPTY_PASSWORD=1
-    -v ./db:/docker-entrypoint-initdb.d
-    mysql:latest
+docker run -d -e MYSQL_DATABASE=todo_app -e MYSQL_USER=todo_admin -e MYSQL_PASSWORD=password -e MYSQL_ALLOW_EMPTY_PASSWORD=1 -v ./db:/docker-entrypoint-initdb.d mysql:latest
 
 ```
 ### PhpMyAdmin to Access the MySQL Database Container
