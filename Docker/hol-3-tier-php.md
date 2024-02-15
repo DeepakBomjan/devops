@@ -303,6 +303,18 @@ Run the mysql docker
 docker run -d -e MYSQL_DATABASE=todo_app -e MYSQL_USER=todo_admin -e MYSQL_PASSWORD=password -e MYSQL_ALLOW_EMPTY_PASSWORD=1 -v ./db:/docker-entrypoint-initdb.d mysql:latest
 
 ```
+
+Once started the database, check if all the databases has created  
+Frist exec into the db container
+```bash
+docker exec -it bd3b3c27ce3e bash
+
+```
+
+```sql
+SHOW DATABASES;
+```
+
 ### PhpMyAdmin to Access the MySQL Database Container
 
 ![image](../images/3_tier_apachephpmysql_addphpmyadmin.webp)
@@ -313,7 +325,7 @@ Run **phpmyadmin**
 ```bash
 docker run -d \
     -p 8080:80 \
-    -e PMA_HOST=database \
+    -e PMA_HOST=bd3b3c27ce3e \
     -e PMA_PORT=3306 \
     phpmyadmin/phpmyadmin
 
@@ -427,6 +439,56 @@ echo $jsonResponse;
 ```
 
 
+## Few commands
+```bash
+apt-get install vim
+apt-get install php-mysql
+sudo service apache2 restart
+
+sudo service php-fpm restart
+
+```
+### Check if php module is loaded
+```php
+<?php
+$extensionName = 'mysqli'; // Replace this with the name of the extension you want to check
+
+if (extension_loaded($extensionName)) {
+    echo "The $extensionName extension is available.\n";
+} else {
+    echo "The $extensionName extension is not available.\n";
+}
+?>
+```
+### Enter into docker namespace
+```bash
+sudo nsenter --target $(docker inspect --format '{{.State.Pid}}' focused_euclid) --mount --uts --ipc --net --pid
+```
+
+### Show ip address of all the running containers
+```bash
+docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -q)
+```
+
+### Iptables enable logging
+```bash
+sudo iptables -A INPUT -j LOG --log-prefix "INPUT: "
+```
+
+### tcpdump
+```bash
+tcpdump -i ens5 port 5000
+sudo tcpdump -i <interface> not port 22
+tcpdump -vvv -n -i ens5 tcp and not port 22 and not port 80 and not port 53 and not port 443
+
+```
+### Docker run with container name
+```bash
+docker run -d --name fe -v ./frontend:/usr/local/apache2/htdocs -p 3000:80 httpd:latest
+```
+
+### Enable the MySQL Extension
+Uncomment `extension=mysqli` in `/etc/php/{version}/apache2/php.ini` file
 
 
 ## References
