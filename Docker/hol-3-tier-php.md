@@ -438,6 +438,7 @@ $jsonResponse = json_encode($response);
 echo $jsonResponse;
 ```
 
+## Troubleshooting  
 
 ## Few commands
 ```bash
@@ -490,7 +491,28 @@ docker run -d --name fe -v ./frontend:/usr/local/apache2/htdocs -p 3000:80 httpd
 ### Enable the MySQL Extension
 Uncomment `extension=mysqli` in `/etc/php/{version}/apache2/php.ini` file
 
+### Docker start with --add-hosts
+```bash
+docker run --rm=True --add-host=testing.example.com:10.0.0.1 -it ubuntu /bin/bash
+docker run --hostname test --ip 10.1.2.3 ubuntu:14.04 
+```
 
+## Run docker in host network
+```bash
+docker run --network=host <image_name>
+
+```
+
+### Steps
+```bash
+docker run -d -e MYSQL_DATABASE=todo_app -e MYSQL_USER=todo_admin -e MYSQL_PASSWORD=password -e MYSQL_ALLOW_EMPTY_PASSWORD=1 -v ./db:/docker-entrypoint-initdb.d --name=db mysql:latest
+
+docker run -d --name=be -p 5000:80 -v ./api:/var/www/html --add-host=database:172.17.0.2 db
+
+docker run -d -p 3000:80 -v ./frontend:/usr/local/apache2/htdocs --name=fe --add-host=backend:172.17.0.3 httpd:latest
+docker run -d -p 8080:80 --add-host=database:172.17.0.2 -e PMA_HOST=database -e PMA_PORT=3306 phpmyadmin/phpmyadmin
+
+```
 ## References
 1. [github repo](https://github.com/DeepakBomjan/apache-php-mysql)
 2. [Building a Simple 3-Tier Architecture with Docker Compose: A Hands-On Project Journey](https://medium.com/@kesaralive/getting-started-with-docker-compose-hands-on-project-experience-e562ab07e24c)
