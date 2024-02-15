@@ -503,6 +503,17 @@ docker run --network=host <image_name>
 
 ```
 
+## .htaccess file
+```bash
+Header add Access-Control-Allow-Origin "*"
+Header add Access-Control-Allow-Methods: "GET,POST,OPTIONS,DELETE,PUT"
+```
+```bash
+Header add Access-Control-Allow-Origin "*"
+Header add Access-Control-Allow-Headers "origin, x-requested-with, content-type"
+Header add Access-Control-Allow-Methods "PUT, GET, POST, DELETE, OPTIONS"
+```
+## [Check](https://stackoverflow.com/questions/14467673/enable-cors-in-htaccess)
 ### Steps
 ```bash
 docker run -d -e MYSQL_DATABASE=todo_app -e MYSQL_USER=todo_admin -e MYSQL_PASSWORD=password -e MYSQL_ALLOW_EMPTY_PASSWORD=1 -v ./db:/docker-entrypoint-initdb.d --name=db mysql:latest
