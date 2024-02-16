@@ -447,6 +447,9 @@ apt-get install php-mysql
 sudo service apache2 restart
 
 sudo service php-fpm restart
+## Install ps command
+apt install procps
+
 
 ```
 ### Check if php module is loaded
@@ -514,14 +517,27 @@ Header add Access-Control-Allow-Headers "origin, x-requested-with, content-type"
 Header add Access-Control-Allow-Methods "PUT, GET, POST, DELETE, OPTIONS"
 ```
 ## [Check](https://stackoverflow.com/questions/14467673/enable-cors-in-htaccess)
+
+### Run container in separate network with the ip specified
+Some time following error might be seen
+> docker: Error response from daemon: invalid config for network testnetwork: invalid endpoint settings: user specified IP address is supported only when connecting to networks with user configured subnets. See 'docker run --help'.
+
+```bash
+docker network create --subnet=192.168.0.0/16 mynetwork
+docker run --net mynetwork --ip 192.168.0.2 -d myimage
+
+docker network create my_network_name --subnet=10.11.0.0/16
+docker run -it --net my_network_name --ip 10.11.0.10 nginx
+```
+
 ### Steps
 ```bash
-docker run -d -e MYSQL_DATABASE=todo_app -e MYSQL_USER=todo_admin -e MYSQL_PASSWORD=password -e MYSQL_ALLOW_EMPTY_PASSWORD=1 -v ./db:/docker-entrypoint-initdb.d --name=db mysql:latest
+docker run -d -e MYSQL_DATABASE=todo_app -e MYSQL_USER=todo_admin -e MYSQL_PASSWORD=password -e MYSQL_ALLOW_EMPTY_PASSWORD=1 -v ./db:/docker-entrypoint-initdb.d --name=db --ip 172.17.0.2 mysql:latest
 
-docker run -d --name=be -p 5000:80 -v ./api:/var/www/html --add-host=database:172.17.0.2 db
+docker run -d --name=be -p 5000:80 -v ./api:/var/www/html --add-host=database:172.17.0.2 --ip 172.17.0.3 be
 
-docker run -d -p 3000:80 -v ./frontend:/usr/local/apache2/htdocs --name=fe --add-host=backend:172.17.0.3 httpd:latest
-docker run -d -p 8080:80 --add-host=database:172.17.0.2 -e PMA_HOST=database -e PMA_PORT=3306 phpmyadmin/phpmyadmin
+docker run -d -p 3000:80 -v ./frontend:/usr/local/apache2/htdocs --name=fe --add-host=backend:172.17.0.4 httpd:latest
+docker run -d -p 8080:80 --add-host=database:172.17.0.2 -e PMA_HOST=database -e PMA_PORT=3306 --ip 172.17.0.5 phpmyadmin/phpmyadmin
 
 ```
 ## References

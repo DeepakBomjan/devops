@@ -21,3 +21,8 @@
 6. [Docker php hello world](https://github.com/mfieldhouse/docker-php-helloworld/tree/master)
 
 7. [Dockerized-PHP-Development-Environment](https://github.com/rizdaprasetya/Dockerized-PHP-Development-Environment/tree/master)
+
+## Example PHP App
+1. [PHP CRUD](https://github.com/mevdschee/php-crud-api)
+2. [SIMPLE CRUD OPERATIONS WITH PHP OOPS AND REST API](https://github.com/suvarthi/PHP-CRUD-REST-API/tree/master)
+3. [PHP MYSQL CRUD API](https://github.com/fariswd/php-mysql-crud/tree/master)

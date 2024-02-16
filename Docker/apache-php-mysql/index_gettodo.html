@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #todos {
+            margin-top: 20px;
+        }
+
+        .todo-item {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .todo-text {
+            flex: 1;
+        }
+
+        .todo-input {
+            margin-right: 10px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .update-btn {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .update-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Todo List</h1>
+        <div>
+            <button id="fetchBtn">Fetch Todos</button>
+            <button id="updateBtn">Update Todos</button>
+        </div>
+        <div id="todos"></div>
+    </div>
+
+    <script>
+        const fetchBtn = document.getElementById("fetchBtn");
+        const updateBtn = document.getElementById("updateBtn");
+        const todosContainer = document.getElementById("todos");
+
+        fetchBtn.addEventListener("click", () => {
+            fetchTodos();
+        });
+
+        updateBtn.addEventListener("click", () => {
+            fetchTodos(true);
+        });
+
+        function fetchTodos(updateMode = false) {
+            const endpoint = updateMode ? "http://3.82.103.188:5000/update" : "http://3.82.103.188:5000/";
+            fetch(endpoint)
+                .then(response => response.json())
+                .then(data => {
+                    renderTodos(data, updateMode);
+                })
+                .catch(error => {
+                    console.error('Error fetching todos:', error);
+                });
+        }
+
+        function renderTodos(todos, updateMode) {
+            todosContainer.innerHTML = "";
+            todos.forEach(todo => {
+                const todoItem = document.createElement("div");
+                todoItem.classList.add("todo-item");
+
+                const todoText = document.createElement("span");
+                todoText.classList.add("todo-text");
+                todoText.textContent = todo._id + ". " + todo.todo;
+                todoItem.appendChild(todoText);
+
+                if (updateMode) {
+                    const updateInput = document.createElement("input");
+                    updateInput.classList.add("todo-input");
+                    updateInput.type = "text";
+                    updateInput.placeholder = "Enter updated todo";
+                    todoItem.appendChild(updateInput);
+
+                    const updateButton = document.createElement("button");
+                    updateButton.classList.add("update-btn");
+                    updateButton.textContent = "Update";
+                    updateButton.addEventListener("click", () => {
+                        const updatedTodo = updateInput.value.trim();
+                        if (updatedTodo !== "") {
+                            updateTodo(todo._id, updatedTodo);
+                        }
+                    });
+                    todoItem.appendChild(updateButton);
+                }
+
+                todosContainer.appendChild(todoItem);
+            });
+        }
+
+        function updateTodo(todoId, updatedTodoText) {
+            fetch("http://3.82.103.188:5000/update", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify({
+                    id: todoId,
+                    todo: updatedTodoText
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Todo updated:", data);
+                fetchTodos(true);
+            })
+            .catch(error => {
+                console.error("Error updating todo:", error);
+            });
+        }
+    </script>
+</body>
+</html>
