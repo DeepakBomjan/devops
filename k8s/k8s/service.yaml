@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: clothes-service
+spec:
+  selector:
+    app: clothes
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: house-service
+spec:
+  selector:
+    app: house
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nepali-service
+spec:
+  selector:
+    app: nepali
+  ports:
+    - protocol: TCP
+      port: 8083
+      targetPort: 8083
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: english-service
+spec:
+  selector:
+    app: english
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 8082
