@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clothes-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clothes
+  template:
+    metadata:
+      labels:
+        app: clothes
+    spec:
+      containers:
+        - name: clothes-app
+          image: dpaktamang/my-clothes-service:latest
+          ports:
+            - containerPort: 8080
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: house-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: house
+  template:
+    metadata:
+      labels:
+        app: house
+    spec:
+      containers:
+        - name: house-app
+          image: dpaktamang/my-house-service:latest
+          ports:
+            - containerPort: 8081
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nepali-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nepali
+  template:
+    metadata:
+      labels:
+        app: nepali
+    spec:
+      containers:
+        - name: nepali-app
+          image: dpaktamang/my-nepali-service:latest
+          ports:
+            - containerPort: 8083
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: english-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: english
+  template:
+    metadata:
+      labels:
+        app: english
+    spec:
+      containers:
+        - name: english-app
+          image: dpaktamang/my-english-service:latest
+          ports:
+            - containerPort: 8082
