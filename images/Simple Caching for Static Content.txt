@@ -1,0 +1,462 @@
+Welcome back
+to the Linux Academy NGINX Deep Dive.
+We've talked about setting up proxy servers
+or reverse proxy servers rather with NGINX.
+And now we're going to look
+at how we can utilize a reverse proxy
+to also do some caching so that if we know
+what the response is going to be from a server,
+we can serve up that content
+without ever needing to bother our application server
+with yet another request.
+So this allows us to, once again, exercise something
+the NGINX is very good at
+and also eke out some more performance
+from the application servers that we have
+because they're not going to be answering
+the same requests over and over again.
+And this can be really good, obviously,
+if you are experiencing a lot of load
+like NGINX can handle a lot of requests simultaneously
+versus something like an application server
+that's using Ruby on Rails, or Django maybe,
+they can handle less, right?
+NGINX is written in C, it's highly performant,
+and it's optimized to handle a lot of requests
+versus something that's running Python, PHP, or Ruby
+is going to be, you know, there
+so that the programmer can write
+something to handle some sort of situation,
+but inevitably those are less performant
+than what NGINX is going to be
+at just serving some bit of content.
+So once NGINX knows what to serve for a specific URL
+or a cache key, as we're going to find out here in a second,
+then it can serve that up rather quickly and prevent you
+from needing to go and scale out your servers
+and have a ton of application servers
+in order to withstand the load that you're going to get.
+We've talked about it numerous times up to this point,
+but the proxy_module and the fastcgi_module
+and the uwsgi_module,
+they all pretty much work the same way,
+and they have a lot of the same cache attributes here.
+So we're going to be working with this cache.
+And for the caching segment we're going to do right now,
+we're actually going to use the fastcgi_cache
+and work with our blog that we already have
+because WordPress does some things that makes it easy for us
+to see different interactions with content.
+But you could do all of these same things
+using a proxy_pass setup
+that you could do with FastCGI.
+So everything we're doing here, for the most part,
+you can just substitute FastCGI for proxy
+and it will work the same way, or uWSGI,
+but WordPress just happens to be a good example
+for us to look at the benefits
+we can get out of caching.
+So let's go ahead and get started now.
+There are a few things we need at first.
+So proxy cache is going to be the main one.
+And if we look at this, it's going to request a zone,
+and a zone is a shared memory used for caching.
+What this really means
+is it wants you to have a defined--a named cache on disk.
+And this is where we're going to run into the cache path.
+So if we look at fastcgi_cache_path,
+this will be actually how we define
+what our cache is going to be,
+and there are a lot of options that we can get through here.
+So we're going to create one
+that's going to be for our blog,
+and it's going to go into the /var/cache directory.
+And we'll go through not using all of these
+because, unfortunately, some of these things
+like the purger, these are parts of NGINX Plus
+that we don't actually have access to
+even though they're here.
+But for the keys that we're actually going to be using,
+we'll talk about them as we write it out.
+Let's go ahead and modify our conf.d/blog.example.conf.
+And one thing to note
+is if we go back and take a look at the cache path,
+you'll see that it needs to be in the http context,
+which means it's not going to be inside of our server block.
+So for that, we're going to go to the top of the file,
+we're going to do fastcgi_cache_path,
+then I'm going to go ahead and put a new line there
+and break this out a little bit.
+But if we look at this, the first thing we need is a path
+and then there are going to be a bunch of different options.
+But you'll notice that these with the square brackets
+are going to be optional,
+but then there are some still that are required.
+So keys_zone and name
+is going to be the one that's required,
+and everything else is optional.
+We're going to put them in this same order, though,
+so we're going to do a levels after our path
+and then we're going to put a keys_zone in here.
+So ours is going to go to /var/cache/nginx/blog.
+And then the levels, this one is a little weird, and
+you're always going to see the same configuration for this.
+In all of my searching and looking into the research
+that I did for, you know, really understanding NGINX myself,
+this is what I found every single time.
+And what this levels key does
+is it sets how many subdirectories should be used
+in order to store things.
+So the way that the cache kind of works
+is NGINX in memory is going to have a hash table
+that it can use key values to look up,
+and it's going to save keys
+that are based off of the request that you're sending,
+and then the value is going to be the destination on disk
+where the information that it needs to respond with
+is going to be stored at.
+And if you have a bunch of files in one directory,
+it can be kind of hard to like look through those things.
+But if you use subdirectories for things,
+then it is actually a little bit faster
+for NGINX to look those up.
+So we're always going to set this to be levels=1:2,
+which will set it to be a two-subdirectory-path style
+that it's going to use,
+and that's going to be underneath blog.
+So you'll see various things.
+It would be like blog/c/12345/
+and then some piece of content. I'm
+going to spread this out on a couple different lines here,
+but we're going to go with keys_zone,
+and this is going to be the name,
+so we're going to call this blog,
+and then we're going to say any of the keys can be up to--
+it's going to be within blog,
+and then the size is going to be 10 megabytes for us.
+The total size of the cache, which is going to be max_size,
+is going to be 1 gigabyte,
+and then anything past 1 gigabyte,
+we want to start deleting things from the cache,
+and NGINX can do that already,
+and it will know what to remove.
+And then we're going to set one more.
+That is going to be inactive=60 minutes.
+And that just means
+that after 60 minutes of not being accessed,
+we're going to remove bits from the cache.
+So this is configuration
+of how the cache itself is going to work,
+and then we also have to--
+in the same area where we're doing our proxy setup--
+we have to configure how the actual cache is going to work
+with relation to our proxy.
+So let's move down a little bit.
+And one thing we can set,
+and we're going to set it inside our server block here,
+is going to be fastcgi_cache_key.
+This is going to be $scheme
+$request_method, so whether it's a POST, GET,
+$host$request_uri.
+And this is an exception to what I had said before
+about the similarities between FastCGI and proxy.
+And the reason for that, if we look at the proxy_cache_key,
+is going to be that it has a default,
+that is, the actual request.
+The difference here
+being that when we are proxying something
+to an application speaking a different binary protocol
+is that it's not going to default
+to that same kind of HTTP path sort of thing,
+so we actually do need to manually set this,
+so this is going to be a fastcgi_cache_key.
+You'll notice that there is no default in this context,
+so we have to do it ourselves.
+But by combining enough of the variables,
+we can make something that uniquely identifies
+any request that comes to our system.
+So the one that we've created here with the scheme,
+whether it's HTTP or HTTPS,
+the request method, the host, and the request_uri,
+which is essentially the domain and the URL.
+This is sufficiently specific to what we need to do
+because the only real difference here
+would be if somebody was trying to send a post or a patch
+for a create or an update if this were a restful system.
+You wouldn't want to cache those anyway
+because you really only want to cache GET or HEAD requests
+for the most part
+because that's reading data which is less likely to change
+than if somebody is actually posting something
+where they should be modifying or creating something
+within the system.
+Moving on, we're going to go down into our location block
+with our actual FastCGI setup here,
+and we're going to do fastcgi_cache which takes a name.
+So this is, we had to define it with cache_path up top,
+and now we can do blog.
+And then the next one we're going to add here
+is going to be fastcgi_cache_valid
+for 60 minutes.
+And the cache_valid bit here
+is really one of the areas that you can fine-tune
+the performance of your application in the cache.
+If you make this really, really long,
+then that means it's going to be hard for you
+to update the information on your site.
+But if you make it really, really small,
+then you're going to have more requests
+going through your application.
+What you can do to really get this right
+for the application that you're working with
+is you can sync this up
+with how long it takes for your content to be updated
+or for you to push out changes to your application.
+So if you know that you're only deploying once a day
+and that no dynamic content is created,
+then you could have your cache be valid for an entire day.
+And then every time when you deploy,
+you could just wipe out your cache,
+and then the first request that is made would be
+the only request for each individual piece of content
+that your application can serve up
+until the next day when you have probably done a deployment.
+So we're going to look at cache_valid more in the next video
+when we talk about microcaching.
+But you can realize
+that this is where you're going to do a lot of the tuning
+for whether or not you should cache things
+for long periods of time or short periods of time.
+And I like to sync these up
+with the inactive remove it for 60 minutes
+or it's cache_valid for 60 minutes.
+This just ensures that after an hour
+something is going to be removed.
+So let's save this configuration
+and make sure we didn't mess anything up.
+Reload nginx.
+If we head back and we take a look at our Inspector here,
+let's go to the Network tab,
+make sure the Disable cache is no longer checked
+if it was still checked for you.
+I know sometimes these things can stick around
+longer than you expect them to.
+It makes it weird to debug things.
+But the next thing we're going to take a look at
+is going to be actually going to blog.example.com,
+and ensuring that we're not signed in.
+And as you can see here, I am signed in as admin.
+And if we refresh the page one more time,
+we're going to see this request that's a GET for /,
+and this just means this is the actual body itself.
+And if we click it, we can see Headers.
+And this is really, really useful information to us.
+So this is good for debugging things.
+But you can see that there's a Response header
+of Cache-Control: no-cache, must-revalidate, max-age.
+And what this means is that the WordPress application
+sent this header back to NGINX.
+This is the header the NGINX looks at to know
+whether or not it should write something out to disk.
+And in this particular case, it's not going to do that.
+And the reason that WordPress sent this
+was because we're logged in.
+This makes it dynamic at this point
+because these are changing things up here,
+and so it's not just static content.
+If somebody had made the same request,
+but they weren't logged in,
+then WordPress would skip adding this header
+and NGINX would cache it.
+If we look in /var/cache/nginx/blog/,
+we can see that there's nothing there.
+That's because it didn't actually cache anything.
+So what we're going to do now is we're going to go
+and--oops, not actually go into the admin panel.
+We're going to go and we're going to log out,
+and we're going to visit the website again.
+We're going to see if there's any difference.
+So now if we click on this,
+you can see that the Response headers don't show
+that Cache-Control header of no-cache anymore.
+And you'll see that our response time was 434 milliseconds.
+And if we refresh the page,
+you'll see that it went from 443 down to 293,
+but is that because it cached?
+And one way we can check this
+is by looking inside of the blog directory.
+Now you can see that it generated some subdirectories,
+so that means that NGINX wrote something to the cache.
+But, unfortunately, knowing the timing difference here
+isn't a great way
+for us to actually go about testing our caching.
+So the next thing we're going to do
+is we're actually going to manually add
+a response header for ourselves
+by editing our blog conf here.
+We're going to use a new one that we haven't seen yet.
+It's going to be add_header, and this allows us
+to add a response header from NGINX itself,
+not necessarily from the side of the application server.
+And we're going to call this X-Cache-Status,
+and then we're going to return the variable
+of $upstream_cache_status.
+And if we check to make sure
+there are no syntax errors there,
+and I realize now actually that I closed that fast--
+sorry about that, but, yeah.
+So we're adding a custom X-header here
+that's X-Cache-Status.
+You could really call this whatever you want.
+This is just one that I've used in the past.
+And then this variable of $upstream_cache_status
+is going to be really useful to us
+so that we can see whether or not it was a hit, a miss,
+or if there was some sort of issue.
+So with that line added, we'll save and quit,
+and we will reload nginx.
+And now if we come back over here and we refresh the page,
+we can see that we have an X-Cache-Status here of a HIT,
+and that means that we've seen this page before,
+and it was actually already in the cache,
+so it didn't ever need to make the request go
+all the way over to our application.
+If we go and look at a specific post,
+the first time we hit this post,
+it's going to take quite a bit longer.
+We're going to see X-Cache-Status: MISS,
+and then we're going to know
+that if we hit this exact same page again
+that we should get a HIT
+because the second time around, it was already cached.
+It's going to be cached for an hour in our context,
+and so this is really good for us.
+So WordPress is pretty smart
+about knowing what it can cache and what it can't cache
+based on whether or not we're logged in.
+And one of those things would be if we just go to wp-admin.
+This is an admin dashboard.
+If we take a look at this response,
+you'll see that for this particular form,
+it actually doesn't care.
+But if we sign in--
+oops, apparently, I typed my password wrong--
+when we actually sign in and we're looking at this page,
+you'll see that once we're in wp-admin,
+we're getting no cache, must revalidate.
+And that's because it knows
+that everything inside this area back here
+is going to be dynamic.
+It's going to be from us writing our own posts,
+creating our own pages.
+So the application itself is smart enough
+to report back whether or not this content is cacheable.
+And if you are working with applications
+where the developers have already written out
+these proper response headers,
+then that's great, then you're fine,
+and you don't really have to worry about this too much.
+But if you know there are certain situations
+when you don't want to cache things,
+but the response headers aren't actually being sent
+by the application that you're proxying to,
+then we're going to look at how we can manually decide
+whether or not we want to cache these things.
+And this gives us a good opportunity to take a look
+at setting our own custom variables using conditionals
+and also the other cache directives that we have access to
+that can tell it to manually bypass caching.
+So we're going to open up our configuration again,
+and, like I said, we're going to use a custom variable.
+We're going to do this using the set directive,
+and then variables in NGINX start with a $.
+We're going to call this $skip_cache,
+then we're going to set it by default to be 0.
+And that 0 is going to be important
+when we look at the documentation for
+the actual no-cache directive that we're going to be using.
+But the next thing we want to do
+is we want to use an if statement,
+which takes a conditional in here,
+which in our case is going to be request_uri.
+If it roughly matches
+the string of wp-admin,
+and by roughly matches,
+I mean that's a case-insensitive search,
+so if it's wp-admin or capital wp-admin.
+Then if this matches, then what we're going to do, again,
+is we're going to say set skip_cache to 1,
+and then we're going to continue on.
+And then inside of our location block
+where we're actually configuring
+all of our cache interactions,
+we're going to use a couple different things here.
+We're going to have the fastcgi_cache_bypass,
+and that's going to be the value of skip_cache.
+And then the flip side of this
+is going to be the no_cache skip_cache.
+And what this means
+is that if there is something in the cache,
+we're going to go past it
+and not actually serve what's in the cache.
+And then when we get the response back
+regardless of what the PHP application says,
+we're not going to cache it.
+So using this conditional,
+or using this variable rather with this conditional
+to set it based on our location,
+we're able to explicitly not cache the content
+and go right past any potentially cached content
+that there might be.
+So let's save this,
+make sure we didn't have any problems here.
+And we can't really, in this case, test it
+because the wp-admin area is already telling it
+not to cache itself.
+But if we go and we look at the documentation for this,
+we can go and look at cache_bypass,
+and you'll see that it takes a string.
+And if the string is not equal to zero,
+then whatever is going on,
+like it won't be taken from the cache.
+So it's going to go right past the cache
+and not actually pay attention to it.
+And then similarly, if we go to the no_cache directive,
+it's going to take a string.
+And if it's not equal to zero, then it won't be saved.
+So those 2 things allowed us
+to explicitly bypass the caching.
+There are more tweaks
+that you could potentially make to a cache.
+But for right now this is kind of the basics
+of how you can create a cache
+and get one spun up and understand what's going on there.
+But, once again, if we look at the documentation
+and we just go up to the top of this page,
+we can see that there are quite a few
+different cache options that we have.
+Some of them, unfortunately, are not going to be accessible
+unless you're using NGINX Plus.
+So this cache_purge is a really awesome feature
+that allows you to set up some mappings.
+So if somebody sends a purge request,
+like that would be the actual HTTP verb type,
+you could actually clear specific parts of the cache.
+But you'll notice that it says this functionality
+is available only as part of the commercial subscription.
+So this is an NGINX Plus feature only.
+Unfortunately, it shows up in the nginx.org documentation
+so then you know it exists, but we don't have access to it
+since we're not using NGINX Plus right now.
+But the caching that we're doing right now
+is one means of caching static content
+that's really not dynamic.
+And we looked at how not to cache some content.
+In the next video, we're going to take a look
+at how we can get past the caching validation problem
+because that's really one of the hard things
+to deal with with computers,
+is knowing when not to cache things,
+when to break the cache,
+by setting an extremely short cache time
+and doing what is called microcaching.

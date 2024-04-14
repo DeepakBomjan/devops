@@ -1,0 +1,47 @@
+image: ubuntu:18.04
+
+stages:
+  - build_stage
+  - test_stage
+  - deploy_stage
+
+build:
+  stage: build_stage
+  script:
+    - echo "building..." >> ./build_result.txt
+  artifacts:
+    paths:
+    - build_result.txt
+    expire_in: 1 week
+
+unit_test:
+  stage: test_stage
+  script:
+    - ls
+    - cat build_result.txt
+    - cp build_result.txt unittest_result.txt
+    - echo "unit testing..." >> ./unittest_result.txt
+  artifacts:
+    paths:
+    - unittest_result.txt
+    expire_in: 1 week
+
+integration_test:
+  stage: test_stage
+  script:
+    - ls
+    - cat build_result.txt
+    - cp build_result.txt integration_test_result.txt
+    - echo "integration testing..." >> ./integration_test_result.txt
+  artifacts:
+    paths:
+    - integration_test_result.txt
+    expire_in: 1 week
+
+deploy:
+  stage: deploy_stage
+  script:
+    - ls
+    - cat build_result.txt
+    - cat unittest_result.txt
+    - cat integration_test_result.txt
