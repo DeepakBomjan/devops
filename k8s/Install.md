@@ -97,7 +97,7 @@ sudo kubeadm init
 
 ```bash
 sudo kubeadm join 172.31.58.149:6443 --token ww0doo.9s4l9e6u569iw4f3  --discovery-token-ca-cert-hash sha256:a1f7ba113c3498a17431ec135124e22b9c6dd69fd94f759c34de28f3dd5ad9bc
-    ```
+```
 
 
 ```
