@@ -85,7 +85,7 @@ To see the stack trace of this error execute with --v=5 or higher
 ```bash
 sudo systemctl restart containerd
 sudo systemctl enable containerd
-
+systemctl status containerd
 
 ```
 ### Run only on master node !!!
