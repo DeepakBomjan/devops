@@ -49,7 +49,12 @@ sudo sysctl --system
 sudo yum install -y yum-utils
 sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 sudo yum install containerd.io
-
+```
+```bash
+sudo containerd config default | sudo tee /etc/containerd/config.toml
+```
+Optional 
+```bash
 # /etc/containerd/config.toml
 
 cat <<EOF | sudo tee /etc/containerd/config.toml
@@ -63,8 +68,8 @@ version = 2
           [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
             SystemdCgroup = true
 EOF
-
 ```
+Change `SystemdCgroup = true` in /etc/containerd/config.toml
 
 
 ## Error
