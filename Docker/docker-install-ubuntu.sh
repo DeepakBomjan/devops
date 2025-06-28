@@ -19,7 +19,8 @@ sudo usermod -aG docker ubuntu
 
  # Enable password authentication
 sed -i 's/^PasswordAuthentication\s*no/PasswordAuthentication yes/' /etc/ssh/sshd_config.d/*
-systemctl restart sshd
+systemctl restart sshd || true
+systemctl restart ssh || true
 
 echo -e "changeme\nchangeme" | sudo -S passwd ubuntu
 
